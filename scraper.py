@@ -12,9 +12,13 @@ logging.basicConfig(
   format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
   datefmt='%H:%M:%S',
   level=logging.DEBUG)
+
 def lg(msg=""):
   logging.debug(msg)
   print(msg)
+  
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
   
 lg("Scraper started")
 
@@ -33,8 +37,10 @@ uids, max_count))
 lg()
 
 # iterate through each target user
+ucount = 0
 for u in uids:
   lg("Now downloading from user: {}".format(u))
+  ucount += 1
   
   # create download folder
   user_dir = pics_dir + u + '/'
@@ -72,7 +78,8 @@ for u in uids:
         lg()
         break
       
-      lg('#' + str(count) + ':')
+      clear()
+      lg("Progress: ({}/{}) @{} #{} (max {}) ".format(ucount, len(uids), u, count, max_count))
       
       item_meta = bs(ur.urlopen(item).read()) \
       .find_all(id='outbound.main_pic')
@@ -117,4 +124,5 @@ for u in uids:
     
     pg += 80
 
+clear()
 lg("Completed")
